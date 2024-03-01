@@ -37,15 +37,15 @@ export default async function resolveStembleData<T, Args extends any[]>(task: Pr
     }
     if (emailCol == -1) throw new Error('Fail to locate the column of emails in the worksheet');
     for (const [ind, key] of headerRows) {
-      const value = row.getCell(ind).toString();
-      const email = row.getCell(emailCol).toString();
-      if (email === undefined || email == null) continue;
+      const value = row.getCell(ind).value?.toString();
+      const email = row.getCell(emailCol).value?.toString();
+      if (email === undefined || email === null) continue;
       result.push({
         sis_id: undefined,
         email: email.toString(),
         assignment: key.toString(),
         rubric_item: assignmentName,
-        grade: Number.parseFloat((value ?? 0).toString())
+        grade: Number.parseFloat(value ?? '0')
       })
     }
   });
