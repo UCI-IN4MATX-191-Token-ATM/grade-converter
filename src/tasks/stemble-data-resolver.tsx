@@ -36,11 +36,9 @@ export default async function resolveStembleData<T, Args extends any[]>(task: Pr
       return;
     }
     if (emailCol == -1) throw new Error('Fail to locate the column of emails in the worksheet');
-    const values = row.values as ExcelJS.CellValue[];
     for (const [ind, key] of headerRows) {
-      if (values.length <= ind || values.length <= emailCol) continue;
-      const value = values[ind];
-      const email = values[emailCol];
+      const value = row.getCell(ind).toString();
+      const email = row.getCell(emailCol).toString();
       if (email === undefined || email == null) continue;
       result.push({
         sis_id: undefined,
