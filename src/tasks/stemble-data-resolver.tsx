@@ -41,7 +41,6 @@ export default async function resolveStembleData<T, Args extends any[]>(task: Pr
       if (values.length <= ind || values.length <= emailCol) continue;
       const value = values[ind];
       const email = values[emailCol];
-      console.log(email);
       // TODO-Now: should empty cell be skipped or treated as zero?
       if (value === undefined || value === null || email === undefined || email == null) continue;
       result.push({
