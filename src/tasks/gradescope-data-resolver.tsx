@@ -24,7 +24,7 @@ export default async function resolveGradeScopeData<T, Args extends any[]>(task:
       result.push({
         sis_id: value.SID,
         email: value.Email,
-        assignment: value.Tags,
+        assignment: value.Tags.trim(),
         rubric_item: assignmentName,
         grade: Number.parseFloat(value.Score)
       });
