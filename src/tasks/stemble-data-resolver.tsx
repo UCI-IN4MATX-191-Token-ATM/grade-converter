@@ -41,14 +41,13 @@ export default async function resolveStembleData<T, Args extends any[]>(task: Pr
       if (values.length <= ind || values.length <= emailCol) continue;
       const value = values[ind];
       const email = values[emailCol];
-      // TODO-Now: should empty cell be skipped or treated as zero?
-      if (value === undefined || value === null || email === undefined || email == null) continue;
+      if (email === undefined || email == null) continue;
       result.push({
         sis_id: undefined,
         email: email.toString(),
         assignment: key.toString(),
         rubric_item: assignmentName,
-        grade: Number.parseFloat(value.toString())
+        grade: Number.parseFloat((value ?? 0).toString())
       })
     }
   });
