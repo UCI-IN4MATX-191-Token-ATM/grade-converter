@@ -14,6 +14,7 @@ import transformRawData from "../tasks/raw-data-transformer";
 import uploadCanvasGrade from "../tasks/canvas-grade-uploader";
 import resolveStembleData from "../tasks/stemble-data-resolver";
 import formatError from "../util/error-formatter";
+import AutoScroll from "./auto-scroll-comp";
 
 
 export default function RequestProcessor({ value, onFinish }: { value: Record<string, any>, onFinish: () => void }) {
@@ -45,11 +46,12 @@ export default function RequestProcessor({ value, onFinish }: { value: Record<st
 
       const setupFinalReport = (status: 'error' | 'aborted' | 'finished', rawDataSkipped?: Record<string, any>[], gradeDataSkipped?: Record<string, any>[]) => {
         if ((rawDataSkipped === undefined || rawDataSkipped.length == 0) && (gradeDataSkipped === undefined || gradeDataSkipped.length == 0)) return;
-        setFinalReport([() => <>
+        const reportComp = () => <>
           <p>{status != 'error' ? `The upload process is ${status}` : 'An error occurred during the upload process.'}. Here is some data you might need:</p>
           {(rawDataSkipped !== undefined && rawDataSkipped.length > 0) && <div className="my-3"><span>Skipped Records: </span> <DataArrayCSVExporter data={rawDataSkipped} filename={'Skipped-Records'} /></div>}
           {(gradeDataSkipped !== undefined && gradeDataSkipped.length > 0) && <div className="my-3"><span>Fail to Grade: </span> <DataArrayCSVExporter data={gradeDataSkipped} filename={'Fail-to-Grade'} /></div>}
-        </>]);
+        </>;
+        setFinalReport([() => <AutoScroll comp={reportComp} />]);
       };
 
       const linkSubTaskInfo = <T, Args extends any[]>(task: ProgressableTask<T, Args>): (() => void) => {
@@ -66,7 +68,7 @@ export default function RequestProcessor({ value, onFinish }: { value: Record<st
       const warningFunc = async (comp: FC) => {
         let promiseResolve: ((v: boolean) => void) | undefined = undefined;
         const promise = new Promise<boolean>(resolve => promiseResolve = resolve);
-        setWarningComp([comp, promiseResolve!]);
+        setWarningComp([() => <AutoScroll comp={comp} />, promiseResolve!]);
         const result = await promise;
         setWarningComp(undefined);
         return result;
@@ -173,15 +175,17 @@ export default function RequestProcessor({ value, onFinish }: { value: Record<st
   return <>
     <div className="space-y-4">
       {rootTaskProgress !== undefined &&
-        <div>
+        <AutoScroll comp={() => <>
           <ProgressBar progress={rootTaskProgress} />
           {rootTaskMessage && <p className="text-center">{rootTaskMessage}</p>}
-        </div>}
+        </>} />
+      }
       {subTaskProgress !== undefined &&
-        <div>
+        <AutoScroll comp={() => <>
           <ProgressBar progress={subTaskProgress} />
           {subTaskMessage && <p className="text-center">{subTaskMessage}</p>}
-        </div>
+        </>}
+        />
       }
       {warningComp !== undefined && WarningComponentRef &&
         <div className="border border-black bg-yellow-100 rounded-3xl p-4">
