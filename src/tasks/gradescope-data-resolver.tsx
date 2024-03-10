@@ -21,7 +21,7 @@ export default async function resolveGradeScopeData<T, Args extends any[]>(task:
     const values = parse(await data.async('string'), { columns: true, skipRecordsWithError: true });
     for (const value of values) {
       if (value['Assignment Submission ID'].length == 0) break;
-      if (Number.isNaN(Number.parseInt('Assignment Submission ID'))) break;
+      if (Number.isNaN(Number.parseInt(value['Assignment Submission ID']))) break;
       if (value.Tags.length == 0) continue;
       result.push({
         sis_id: value.SID,
