@@ -18,11 +18,11 @@ export default async function resolveGradeScopeData<T, Args extends any[]>(task:
     //   "Score": string;
     //   "Tags": string;
     // }>(await data.async('string'), { header: true }).data;
-    const values = parse(await data.async('string'), { columns: true, skipRecordsWithError: true });
+    const values = parse(await data.async('string'), { columns: true, skipRecordsWithError: true }) as { [key: string]: string }[];
     for (const value of values) {
-      if (value['Assignment Submission ID'].length == 0) break;
-      if (Number.isNaN(Number.parseInt(value['Assignment Submission ID']))) break;
-      if (value.Tags.length == 0) continue;
+      if (value['Assignment Submission ID']?.length ?? 0 == 0) break;
+      if (Number.isNaN(Number.parseInt(value['Assignment Submission ID'] ?? ''))) break;
+      if (value.Tags?.length ?? 0 == 0) continue;
       result.push({
         sis_id: value.SID,
         email: value.Email,
