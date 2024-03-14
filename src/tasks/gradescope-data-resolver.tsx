@@ -20,7 +20,7 @@ export default async function resolveGradeScopeData<T, Args extends any[]>(task:
     // }>(await data.async('string'), { header: true }).data;
     const preprocess = async () => {
       const text = await data.async('string');
-      const endRegEx = /(\n|\r|\r\n)Point Values.*Rubric Numbers.*Scoring Method.*$/gs;
+      const endRegEx = /(\n|\r|\r\n)Point Values.*(\n|\r|\r\n)Rubric Numbers.*(\n|\r|\r\n)Scoring Method.*(\n|\r|\r\n)*$/g;
       return { processed: text.replace(endRegEx, ''), cut: text.match(endRegEx) };
     };
     const { processed } = await preprocess();
